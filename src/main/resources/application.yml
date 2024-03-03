@@ -1,0 +1,17 @@
+server:
+  port: 8080
+mybatis:
+  type-aliases-package: com.lucky.entity
+  mapper-locations: classpath:/mapper/*.xml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.mysql.cj.jdbc.MysqlDataSource
+    username: root
+    password: a1436381036
+    url: jdbc:mysql://localhost:3306/moyugongming
+  thymeleaf:
+    prefix: classpath:/public/
+    suffix: .html
+  main:
+    allow-bean-definition-overriding: true

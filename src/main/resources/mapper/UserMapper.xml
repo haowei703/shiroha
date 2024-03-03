@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shiroha.moyugongming.dao.UserMapper">
+    <select id="getUserByPhoneNumber" resultType="com.shiroha.moyugongming.entity.User" parameterType="java.lang.String">
+        SELECT * FROM user
+        WHERE phoneNumber = #{phoneNumber};
+    </select>
+    <insert id="insertUser" parameterType="com.shiroha.moyugongming.entity.User">
+        INSERT INTO user(userName, phoneNumber)
+        VALUES (#{userName}, #{phoneNumber});
+    </insert>
+</mapper>
