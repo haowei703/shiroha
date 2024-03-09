@@ -6,18 +6,23 @@ services:
       - 'MONGO_INITDB_ROOT_PASSWORD=a1436381036'
       - 'MONGO_INITDB_ROOT_USERNAME=root'
     ports:
-      - '27017'
+      - '50729:27017'
+    volumes:
+      - ./data/mongodb:/data/db
   mysql:
     image: 'mysql:latest'
-
     environment:
       - 'MYSQL_DATABASE=moyugongming'
       - 'MYSQL_PASSWORD=a1436381036'
       - 'MYSQL_ROOT_PASSWORD=a1436381036'
       - 'MYSQL_ROOT_USER=root'
     ports:
-      - '3306'
+      - '61444:3306'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
   redis:
     image: 'redis:latest'
     ports:
-      - '6379'
+      - '50730:6379'
+    volumes:
+      - ./data/redis:/data

@@ -8,7 +8,7 @@
         WHERE phoneNumber = #{phoneNumber};
     </select>
     <insert id="insertUser" parameterType="com.shiroha.moyugongming.entity.User">
-        INSERT INTO user(userName, phoneNumber)
-        VALUES (#{userName}, #{phoneNumber});
+        INSERT INTO user(userName, password, phoneNumber)
+        VALUES (#{userName}, #{password}, #{phoneNumber});
     </insert>
 </mapper>

@@ -1,18 +1,17 @@
 package com.shiroha.moyugongming.entity;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Getter
 @Data
+@NoArgsConstructor
 @RequiredArgsConstructor
 public class User {
-    // 用户id
-    private int userId;
+    private Integer userID;
     // 用户名
     private String userName;
+    // 密码
+    private String password;
     // 电话
     @NonNull
     private String phoneNumber;
