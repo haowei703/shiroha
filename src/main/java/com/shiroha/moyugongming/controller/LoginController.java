@@ -43,7 +43,7 @@ public class LoginController {
                     logger.error(e.getMessage());
                     return ResponseEntity.badRequest().body("验证码插入失败");
                 }
-                return ResponseEntity.ok("验证码发送成功,验证码" + code);
+                return ResponseEntity.ok("验证码发送成功");
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -69,6 +69,9 @@ public class LoginController {
             }
         } else if (phoneNumber != null && password != null) {
             User user = userService.getUserByPhoneNumber(phoneNumber);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("该用户还未注册");
+            }
             if (user.getPassword().equals(password)) {
                 return ResponseEntity.ok("登录成功");
             } else return ResponseEntity.badRequest().body("用户名或密码错误");
