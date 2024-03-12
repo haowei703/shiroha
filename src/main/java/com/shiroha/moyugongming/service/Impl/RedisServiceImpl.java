@@ -17,11 +17,18 @@ public class RedisServiceImpl implements RedisService {
         this.redisTemplate = redisTemplate;
     }
 
+    @Override
     public void setValue(String key, String value) {
         redisTemplate.opsForValue().set(key, value,5, TimeUnit.MINUTES);
     }
 
+    @Override
     public String getValue(String key) {
         return redisTemplate.opsForValue().get(key);
+    }
+
+    @Override
+    public boolean verifyCode(String phoneNumber, String code) {
+        return getValue(phoneNumber).equals(code);
     }
 }
