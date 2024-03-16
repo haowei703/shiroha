@@ -1,19 +1,16 @@
 package com.shiroha.moyugongming.controller;
 
+import com.shiroha.moyugongming.service.Impl.WebSocketClientServiceImpl;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.BinaryMessage;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 客户端上传视频，服务端回传手语识别结果和语音播报
@@ -21,37 +18,31 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class VideoSocketController extends BinaryWebSocketHandler {
+    @Autowired
+    WebSocketClientServiceImpl webSocketClientService;
+
     @Override
-    protected void handleBinaryMessage(@NonNull WebSocketSession session, BinaryMessage message) {
-        // 处理接收到的二进制视频流
-        byte[] videoData = message.getPayload().array();
-        String path = "src/main/resources/video";
-        Path directoryPath = Paths.get(path);
+    protected void handleBinaryMessage(@NonNull WebSocketSession session, @NonNull BinaryMessage message) throws IOException, InterruptedException {
 
-        // 检查目录是否存在，如果不存在则创建
-        if (!Files.exists(directoryPath)) {
+        // 异步建立连接，当连接成功后调用回调
+        webSocketClientService.connectAsync().thenAccept(Void -> {
             try {
-                Files.createDirectories(directoryPath);
-                System.out.println("Directory created: " + directoryPath);
+                webSocketClientService.sendMessage(message);
             } catch (IOException e) {
-                System.err.println("Failed to create directory: " + directoryPath);
-                e.printStackTrace();
-                return;
+                throw new RuntimeException(e);
             }
-        }
 
-        Path filePath = Paths.get(path, "test.mp4");
-
-        // 将视频数据写入文件
-        try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
-            fos.write(videoData);
-            System.out.println("Video saved to: " + filePath);
-        } catch (IOException e) {
-            System.err.println("Failed to save video to file: " + filePath);
-            e.printStackTrace();
-        }
-
+            CompletableFuture<WebSocketMessage<?>> future = webSocketClientService.receiveMessage();
+            future.thenAccept(response -> {
+                try {
+                    session.sendMessage(new TextMessage(response.toString()));
+                } catch (IOException e) {
+                    log.error("Error sending message to client: {}", e.getMessage());
+                }
+            });
+        });
     }
+
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
@@ -65,6 +56,7 @@ public class VideoSocketController extends BinaryWebSocketHandler {
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) throws Exception {
         // 连接关闭时执行任何清理操作
         log.info("connect is closed:{},{},{}", System.currentTimeMillis(), status.getReason(), session.getBinaryMessageSizeLimit());
+        webSocketClientService.disconnect();
     }
 
 }
