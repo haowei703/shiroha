@@ -27,12 +27,14 @@ public class VideoSocketController extends BinaryWebSocketHandler {
         // 异步建立连接，当连接成功后调用回调
         webSocketClientService.connectAsync().thenAccept(Void -> {
             try {
+                // 转发消息给本地python WebSocket服务器
                 webSocketClientService.sendMessage(message);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
             CompletableFuture<WebSocketMessage<?>> future = webSocketClientService.receiveMessage();
+            // 本地python WebSocket服务器的异步消息
             future.thenAccept(response -> {
                 try {
                     session.sendMessage(new TextMessage(response.toString()));

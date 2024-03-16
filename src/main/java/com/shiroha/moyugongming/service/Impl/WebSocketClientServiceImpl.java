@@ -23,6 +23,7 @@ public class WebSocketClientServiceImpl implements WebSocketClientService {
     private final URI serverUri;
 
     WebSocketClientHandler handler;
+
     private WebSocketConnectionManager manager;
 
     @Autowired
@@ -40,7 +41,10 @@ public class WebSocketClientServiceImpl implements WebSocketClientService {
         manager.setAutoStartup(true);
 
         handler.setConnectedHandler(future::complete);
-        manager.start();
+        // 与本地WebSocket服务器连接未关闭则不需要开启连接，否则开启
+        if (!manager.isConnected()) {
+            manager.start();
+        }
         return future;
     }
 
@@ -54,7 +58,6 @@ public class WebSocketClientServiceImpl implements WebSocketClientService {
         WebSocketSession session = handler.getSession();
         session.sendMessage(message);
     }
-
 
     @Override
     public CompletableFuture<WebSocketMessage<?>> receiveMessage() {
