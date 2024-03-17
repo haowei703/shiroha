@@ -33,8 +33,7 @@ spring:
 
 python:
   server:
-    host: localhost
-    port: 8765
+    url: ws://localhost:10123
 
 
 

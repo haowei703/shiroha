@@ -13,8 +13,5 @@ public interface WebSocketClientService {
     void disconnect();
 
     /* 发送消息 */
-    void sendMessage(WebSocketMessage<?> message) throws IOException;
-
-    /* 回传服务器信息 */
-    CompletableFuture<WebSocketMessage<?>> receiveMessage();
+    CompletableFuture<WebSocketMessage<?>> sendMessage(WebSocketMessage<?> message) throws IOException;
 }

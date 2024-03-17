@@ -5,44 +5,55 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.socket.BinaryMessage;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 客户端上传视频，服务端回传手语识别结果和语音播报
  */
 @Component
 @Slf4j
+@ControllerAdvice
 public class VideoSocketController extends BinaryWebSocketHandler {
+
     @Autowired
     WebSocketClientServiceImpl webSocketClientService;
 
     @Override
-    protected void handleBinaryMessage(@NonNull WebSocketSession session, @NonNull BinaryMessage message) throws IOException, InterruptedException {
+    public void handleBinaryMessage(@NonNull WebSocketSession session, @NonNull BinaryMessage message) {
 
-        // 异步建立连接，当连接成功后调用回调
-        webSocketClientService.connectAsync().thenAccept(Void -> {
-            try {
-                // 转发消息给本地python WebSocket服务器
-                webSocketClientService.sendMessage(message);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if (!webSocketClientService.isConnected()) {
+            // 异步建立连接，当连接成功后调用回调
+            webSocketClientService.connectAsync().thenAccept(Void -> {
+                sendMessage(session, message);
+            });
+        } else {
+            sendMessage(session, message);
+        }
 
-            CompletableFuture<WebSocketMessage<?>> future = webSocketClientService.receiveMessage();
-            // 本地python WebSocket服务器的异步消息
-            future.thenAccept(response -> {
+
+    }
+
+    private void sendMessage(WebSocketSession session, BinaryMessage message) {
+        try {
+            // 转发消息给本地python WebSocket服务器
+            webSocketClientService.sendMessage(message).thenAccept(response -> {
                 try {
-                    session.sendMessage(new TextMessage(response.toString()));
+                    session.sendMessage(new TextMessage(response.getPayload().toString()));
                 } catch (IOException e) {
                     log.error("Error sending message to client: {}", e.getMessage());
                 }
             });
-        });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
