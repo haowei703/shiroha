@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +20,6 @@ public class User implements UserDetails {
     @TableId(type = IdType.AUTO)
     private Long id;
     // 用户名
-    @Getter
     @TableField("userName")
     private String userName;
     // 密码
@@ -48,6 +46,10 @@ public class User implements UserDetails {
     public String getUsername() {
         // 使用手机号作为登录凭据
         return phoneNumber;
+    }
+
+    public String getUserName() {
+        return this.userName;
     }
 
     @Override//返回true，代表用户账号没过期

@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserDetailsService, UserService {
@@ -37,14 +40,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq("phoneNumber", phoneNumber);
         return userMapper.selectOne(queryWrapper);
     }
-    @Override
-    public boolean verifyPassword(String phoneNumber, String password) {
-        User user = findByPhoneNumber(phoneNumber);
-        if (user != null) {
-            return user.getPassword().equals(password);
-        }
-        return false;
-    }
 
     @Override
     public void insertOne(String userName, String password, String phoneNumber) {
@@ -63,5 +58,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public Map<String, String> getUserInfo(String phoneNumber) {
+        User user = findByPhoneNumber(phoneNumber);
+        Map<String, String> userInfo = new HashMap<>();
+        userInfo.put("userName", user.getUserName());
+        userInfo.put("id", user.getId().toString());
+        return userInfo;
     }
 }
