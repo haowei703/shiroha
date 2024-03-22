@@ -1,5 +1,6 @@
 package com.shiroha.moyugongming.config.web;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -11,6 +12,12 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
+
+    @Value("${accessFile.resourceHandler}")
+    private String resourceHandler;
+
+    @Value("${accessFile.location}")
+    private String location;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -27,6 +34,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/public/");
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/public/static/");
+        registry.addResourceHandler(resourceHandler)
+                .addResourceLocations("file:///" + location);
     }
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {

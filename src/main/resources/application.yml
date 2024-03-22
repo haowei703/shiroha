@@ -34,7 +34,7 @@ spring:
       port: 6379
       host: localhost
   thymeleaf:
-    prefix: classpath:/public/
+    prefix: classpath:/templates/
     suffix: .html
   main:
     allow-bean-definition-overriding: true
@@ -42,6 +42,11 @@ spring:
 python:
   server:
     url: ws://localhost:10123
+
+accessFile:
+  resourceHandler: /images/**
+  location: classpath:/public/
+
 
 
 
