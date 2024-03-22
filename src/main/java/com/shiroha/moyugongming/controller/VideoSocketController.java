@@ -1,19 +1,20 @@
 package com.shiroha.moyugongming.controller;
 
 import com.shiroha.moyugongming.config.redis.RedisCache;
-import com.shiroha.moyugongming.service.Impl.WebSocketClientServiceImpl;
+import com.shiroha.moyugongming.contract.MessageExchangeClient;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.socket.*;
+import org.springframework.web.socket.BinaryMessage;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,44 +31,21 @@ import java.util.regex.Pattern;
 public class VideoSocketController extends BinaryWebSocketHandler {
 
     @Autowired
-    WebSocketClientServiceImpl webSocketClientService;
-
-    @Autowired
     RedisCache redisCache;
 
+    @Autowired
+    MessageExchangeClient messageExchangeClient;
 
     @Override
     public void handleBinaryMessage(@NonNull WebSocketSession session, @NonNull BinaryMessage message) throws Exception {
+        byte[] bytes_1 = {1, 2, 3, 4};
+        String result_1 = messageExchangeClient.sendMessage(bytes_1);
+        session.sendMessage(new TextMessage(result_1));
         if (message.getPayloadLength() <= 50) {
             setRedisCache(session, message);
             return;
         }
-        if (!webSocketClientService.isConnected()) {
-            // 异步建立连接，当连接成功后调用回调
-            webSocketClientService.connectAsync().thenAccept(Void -> {
-                try {
-                    byte[] image_size = getSize(session);
-                    if (image_size != null) {
-                        log.info(Arrays.toString(image_size));
-                        byte[] bytes = message.getPayload().array();
-                        int size = image_size.length + bytes.length;
-                        byte[] new_bytes = new byte[size];
-                        System.arraycopy(image_size, 0, new_bytes, 0, image_size.length);
-                        System.arraycopy(bytes, 0, new_bytes, image_size.length, bytes.length);
-                        log.info(String.valueOf(new_bytes.length));
-                        BinaryMessage binaryMessage = new BinaryMessage(new_bytes);
-                        sendMessage(session, binaryMessage);
-                    } else {
-                        throw new Exception("image size is null!");
-                    }
-                } catch (NullPointerException e) {
-                    log.error(e.getMessage());
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                    throw new RuntimeException(e);
-                }
-            });
-        } else {
+        try {
             byte[] image_size = getSize(session);
             if (image_size != null) {
                 byte[] bytes = message.getPayload().array();
@@ -75,26 +53,16 @@ public class VideoSocketController extends BinaryWebSocketHandler {
                 byte[] new_bytes = new byte[size];
                 System.arraycopy(image_size, 0, new_bytes, 0, image_size.length);
                 System.arraycopy(bytes, 0, new_bytes, image_size.length, bytes.length);
-                log.info(String.valueOf(new_bytes.length));
                 BinaryMessage binaryMessage = new BinaryMessage(new_bytes);
-                sendMessage(session, binaryMessage);
+                String result = messageExchangeClient.sendMessage(binaryMessage.getPayload().array());
+                session.sendMessage(new TextMessage(result));
             } else {
                 throw new Exception("image size is null!");
             }
-        }
-    }
-
-    private void sendMessage(WebSocketSession session, WebSocketMessage<?> message) {
-        try {
-            // 转发消息给本地python WebSocket服务器
-            webSocketClientService.sendMessage(message).thenAccept(response -> {
-                try {
-                    session.sendMessage(new TextMessage(response.getPayload().toString()));
-                } catch (IOException e) {
-                    log.error("Error sending message to client: {}", e.getMessage());
-                }
-            });
-        } catch (IOException e) {
+        } catch (NullPointerException e) {
+            log.error(e.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -107,7 +75,6 @@ public class VideoSocketController extends BinaryWebSocketHandler {
         Pattern pattern = Pattern.compile(regex);
 
         String decodedMessage = new String(message.getPayload().array(), StandardCharsets.UTF_8);
-        log.info(decodedMessage);
         Matcher matcher = pattern.matcher(decodedMessage);
 
         if (matcher.find()) {
@@ -148,6 +115,5 @@ public class VideoSocketController extends BinaryWebSocketHandler {
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) throws Exception {
         // 连接关闭时执行任何清理操作
         log.info("connect is closed:{},{},{}", System.currentTimeMillis(), status.getReason(), session.getBinaryMessageSizeLimit());
-        webSocketClientService.disconnect();
     }
 }
