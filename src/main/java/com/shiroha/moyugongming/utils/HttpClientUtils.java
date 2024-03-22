@@ -49,7 +49,6 @@ public class HttpClientUtils {
     static public ResponseEntity<String> invokeOpenAPI(String prompt) throws URISyntaxException {
         String url = "https://api.openai.com/v1/images/generations";
         String secretKey = "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";
-        String size = "1024 * 1024";
 
         URI uri = new URI(url);
         HttpHeaders headers = new HttpHeaders();
