@@ -2,6 +2,7 @@ package com.shiroha.moyugongming.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.shiroha.moyugongming.entity.User;
+import com.shiroha.moyugongming.grpc.client.MessageExchangeClient;
 import com.shiroha.moyugongming.requests.LoginRequest;
 import com.shiroha.moyugongming.service.Impl.RedisServiceImpl;
 import com.shiroha.moyugongming.service.Impl.UserServiceImpl;
@@ -10,6 +11,7 @@ import com.shiroha.moyugongming.utils.JwtUtils;
 import com.shiroha.moyugongming.utils.Result;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,9 @@ public class UserController {
     private RedisServiceImpl redisService;
     @Resource
     private UserServiceImpl userService;
+
+    @Autowired
+    private MessageExchangeClient messageExchangeClient;
 
     // 生成随机用户名
     private static String genUsername() {

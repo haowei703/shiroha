@@ -1,7 +1,8 @@
-package com.shiroha.moyugongming.controller;
+package com.shiroha.moyugongming.handler;
 
 import com.shiroha.moyugongming.config.redis.RedisCache;
-import com.shiroha.moyugongming.contract.MessageExchangeClient;
+import com.shiroha.moyugongming.grpc.client.MessageExchangeClient;
+import com.shiroha.moyugongming.response.GrpcResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,14 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,34 +31,63 @@ import java.util.regex.Pattern;
 @Component
 @Slf4j
 @ControllerAdvice
-public class VideoSocketController extends BinaryWebSocketHandler {
+public class VideoSocketHandler extends BinaryWebSocketHandler {
 
+    private final ConcurrentLinkedQueue<String> messageQueue = new ConcurrentLinkedQueue<>();
+    private final AtomicInteger messageCount = new AtomicInteger(0);
     @Autowired
     RedisCache redisCache;
-
     @Autowired
-    MessageExchangeClient messageExchangeClient;
+    private MessageExchangeClient messageExchangeClient;
 
+    private void addToMessageQueue(String message) {
+        messageQueue.offer(message);
+    }
+
+    // 合并消息并发送给客户端
+    private void sendMergedMessage(WebSocketSession session) {
+        StringBuilder mergedMessage = new StringBuilder();
+        for (int i = 0; i < 3 && !messageQueue.isEmpty(); i++) {
+            String message = messageQueue.poll();
+            if (message != null) {
+                mergedMessage.append(message);
+            }
+        }
+
+        try {
+            if (!mergedMessage.isEmpty()) {
+                // 发送合并后的消息给客户端
+                session.sendMessage(new TextMessage(mergedMessage.toString()));
+            }
+        } catch (IOException e) {
+            log.error("Failed to send merged message: {}", e.getMessage());
+        }
+    }
     @Override
     public void handleBinaryMessage(@NonNull WebSocketSession session, @NonNull BinaryMessage message) throws Exception {
-        byte[] bytes_1 = {1, 2, 3, 4};
-        String result_1 = messageExchangeClient.sendMessage(bytes_1);
-        session.sendMessage(new TextMessage(result_1));
         if (message.getPayloadLength() <= 50) {
             setRedisCache(session, message);
             return;
         }
         try {
-            byte[] image_size = getSize(session);
+            Map<String, Integer> image_size = getSize(session);
             if (image_size != null) {
                 byte[] bytes = message.getPayload().array();
-                int size = image_size.length + bytes.length;
-                byte[] new_bytes = new byte[size];
-                System.arraycopy(image_size, 0, new_bytes, 0, image_size.length);
-                System.arraycopy(bytes, 0, new_bytes, image_size.length, bytes.length);
-                BinaryMessage binaryMessage = new BinaryMessage(new_bytes);
-                String result = messageExchangeClient.sendMessage(binaryMessage.getPayload().array());
-                session.sendMessage(new TextMessage(result));
+                int width = image_size.get("width");
+                int height = image_size.get("height");
+                GrpcResponse response = messageExchangeClient.sendMessage(bytes, width, height);
+                if (response != null && !response.isEmpty()) {
+                    addToMessageQueue(response.getResult());
+
+                    // 增加消息计数器
+                    int count = messageCount.incrementAndGet();
+
+                    // 当消息计数器达到3时，合并消息并发送给客户端
+                    if (count >= 3) {
+                        sendMergedMessage(session);
+                        messageCount.set(0); // 重置消息计数器
+                    }
+                }
             } else {
                 throw new Exception("image size is null!");
             }
@@ -69,7 +101,7 @@ public class VideoSocketController extends BinaryWebSocketHandler {
 
     private void setRedisCache(WebSocketSession session, BinaryMessage message) {
         // 缓存信息至内存池
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         String regex = "#width=(\\d+)&height=(\\d+)";
 
         Pattern pattern = Pattern.compile(regex);
@@ -83,23 +115,22 @@ public class VideoSocketController extends BinaryWebSocketHandler {
             map.put("width", width);
             map.put("height", height);
             redisCache.setCacheMap(String.valueOf(session.getRemoteAddress()), map);
-            redisCache.expire(String.valueOf(session.getRemoteAddress()), 30, TimeUnit.MINUTES);
+            redisCache.expire(String.valueOf(session.getRemoteAddress()), 1, TimeUnit.MINUTES);
         } else {
             log.warn("string format is incorrect");
         }
     }
 
-    private byte[] getSize(WebSocketSession session) {
-        Map<String, Object> map = redisCache.getCacheMap(String.valueOf(session.getRemoteAddress()));
+    private Map<String, Integer> getSize(WebSocketSession session) {
+        Map<String, Integer> map = redisCache.getCacheMap(String.valueOf(session.getRemoteAddress()));
         if (map.containsKey("width") && map.containsKey("height")) {
-            int width = (Integer) map.get("width");
-            int height = (Integer) map.get("height");
+            int width = map.get("width");
+            int height = map.get("height");
+            Map<String, Integer> sizeMap = new HashMap<>();
+            sizeMap.put("width", width);
+            sizeMap.put("height", height);
+            return sizeMap;
 
-            ByteBuffer bb = ByteBuffer.allocate(8);
-            bb.putInt(width);
-            bb.putInt(height);
-
-            return bb.array();
         } else return null;
     }
 
@@ -107,7 +138,7 @@ public class VideoSocketController extends BinaryWebSocketHandler {
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         // 连接建立时执行任何初始化操作
         log.info("The connection is established,{}:{}", Objects.requireNonNull(session.getRemoteAddress()).getHostString(), session.getRemoteAddress().getPort());
-        session.setBinaryMessageSizeLimit(52428800);
+        session.setBinaryMessageSizeLimit(524288000);
         session.setTextMessageSizeLimit(52428800);
     }
 

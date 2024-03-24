@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableWebMvc
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfiguration implements WebMvcConfigurer {
 
     @Value("${accessFile.resourceHandler}")
     private String resourceHandler;

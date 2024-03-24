@@ -8,9 +8,23 @@ public interface MessageRequestOrBuilder extends
         com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>bytes message = 1;</code>
+     * <code>bytes binary_image = 1;</code>
      *
-     * @return The message.
+     * @return The binaryImage.
      */
-    com.google.protobuf.ByteString getMessage();
+    com.google.protobuf.ByteString getBinaryImage();
+
+    /**
+     * <code>int32 width = 2;</code>
+     *
+     * @return The width.
+     */
+    int getWidth();
+
+    /**
+     * <code>int32 height = 3;</code>
+     *
+     * @return The height.
+     */
+    int getHeight();
 }

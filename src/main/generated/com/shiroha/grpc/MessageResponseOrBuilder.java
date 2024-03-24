@@ -8,17 +8,24 @@ public interface MessageResponseOrBuilder extends
         com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string message = 1;</code>
+     * <code>string result = 1;</code>
      *
-     * @return The message.
+     * @return The result.
      */
-    java.lang.String getMessage();
+    java.lang.String getResult();
 
     /**
-     * <code>string message = 1;</code>
+     * <code>string result = 1;</code>
      *
-     * @return The bytes for message.
+     * @return The bytes for result.
      */
     com.google.protobuf.ByteString
-    getMessageBytes();
+    getResultBytes();
+
+    /**
+     * <code>bool isEmpty = 2;</code>
+     *
+     * @return The isEmpty.
+     */
+    boolean getIsEmpty();
 }

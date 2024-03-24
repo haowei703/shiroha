@@ -43,6 +43,18 @@ accessFile:
   resourceHandler: /images/**
   location: classpath:/public/
 
+grpc:
+  client:
+    python-service-grpc:
+      address: 'static:///localhost:8765'
+      enable-keep-alive: true
+      keep-alive-without-calls: true
+      negotiation-type: plaintext
+python:
+  service:
+    host: localhost
+    port: 10415
+
 
 
 

@@ -3,7 +3,6 @@ package com.shiroha.grpc;
 import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
- *
  */
 @javax.annotation.Generated(
         value = "by gRPC proto compiler (version 1.57.2)",
@@ -11,15 +10,13 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 @io.grpc.stub.annotations.GrpcGenerated
 public final class MessageExchangeGrpc {
 
-    public static final java.lang.String SERVICE_NAME = "messageexchange.MessageExchange";
     private static final int METHODID_SEND_MESSAGE = 0;
+
+    public static final java.lang.String SERVICE_NAME = "messageexchange.MessageExchange";
+
     // Static method descriptors that strictly reflect the proto.
     private static volatile io.grpc.MethodDescriptor<com.shiroha.grpc.MessageRequest,
             com.shiroha.grpc.MessageResponse> getSendMessageMethod;
-    private static volatile io.grpc.ServiceDescriptor serviceDescriptor;
-
-    private MessageExchangeGrpc() {
-    }
 
     @io.grpc.stub.annotations.RpcMethod(
             fullMethodName = SERVICE_NAME + '/' + "SendMessage",
@@ -91,34 +88,6 @@ public final class MessageExchangeGrpc {
                     }
                 };
         return MessageExchangeFutureStub.newStub(factory, channel);
-    }
-
-    public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
-        return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-                .addMethod(
-                        getSendMessageMethod(),
-                        io.grpc.stub.ServerCalls.asyncUnaryCall(
-                                new MethodHandlers<
-                                        com.shiroha.grpc.MessageRequest,
-                                        com.shiroha.grpc.MessageResponse>(
-                                        service, METHODID_SEND_MESSAGE)))
-                .build();
-    }
-
-    public static io.grpc.ServiceDescriptor getServiceDescriptor() {
-        io.grpc.ServiceDescriptor result = serviceDescriptor;
-        if (result == null) {
-            synchronized (MessageExchangeGrpc.class) {
-                result = serviceDescriptor;
-                if (result == null) {
-                    serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
-                            .setSchemaDescriptor(new MessageExchangeFileDescriptorSupplier())
-                            .addMethod(getSendMessageMethod())
-                            .build();
-                }
-            }
-        }
-        return result;
     }
 
     /**
@@ -223,6 +192,7 @@ public final class MessageExchangeGrpc {
                     getChannel().newCall(getSendMessageMethod(), getCallOptions()), request);
         }
     }
+    private static volatile io.grpc.ServiceDescriptor serviceDescriptor;
 
     private static final class MethodHandlers<Req, Resp> implements
             io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -261,6 +231,9 @@ public final class MessageExchangeGrpc {
         }
     }
 
+    private MessageExchangeGrpc() {
+    }
+
     private static abstract class MessageExchangeBaseDescriptorSupplier
             implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
         MessageExchangeBaseDescriptorSupplier() {
@@ -297,4 +270,32 @@ public final class MessageExchangeGrpc {
             return getServiceDescriptor().findMethodByName(methodName);
         }
     }
+
+    public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
+        return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+                .addMethod(
+                        getSendMessageMethod(),
+                        io.grpc.stub.ServerCalls.asyncUnaryCall(
+                                new MethodHandlers<
+                                        com.shiroha.grpc.MessageRequest,
+                                        com.shiroha.grpc.MessageResponse>(
+                                        service, METHODID_SEND_MESSAGE)))
+                .build();
+    }
+
+    public static io.grpc.ServiceDescriptor getServiceDescriptor() {
+        io.grpc.ServiceDescriptor result = serviceDescriptor;
+        if (result == null) {
+            synchronized (MessageExchangeGrpc.class) {
+                result = serviceDescriptor;
+                if (result == null) {
+                    serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
+                            .setSchemaDescriptor(new MessageExchangeFileDescriptorSupplier())
+                            .addMethod(getSendMessageMethod())
+              .build();
+        }
+      }
+    }
+    return result;
+  }
 }
