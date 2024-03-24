@@ -23,8 +23,7 @@ public interface MessageRequestOrBuilder extends
 
     /**
      * <code>int32 height = 3;</code>
-     *
      * @return The height.
-     */
-    int getHeight();
+   */
+  int getHeight();
 }

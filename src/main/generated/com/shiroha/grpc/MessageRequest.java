@@ -17,39 +17,12 @@ public final class MessageRequest extends
         super(builder);
     }
 
-    public static final int BINARY_IMAGE_FIELD_NUMBER = 1;
-    public static final int WIDTH_FIELD_NUMBER = 2;
-    public static final int HEIGHT_FIELD_NUMBER = 3;
-    // @@protoc_insertion_point(class_scope:messageexchange.MessageRequest)
-    private static final com.shiroha.grpc.MessageRequest DEFAULT_INSTANCE;
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return com.shiroha.grpc.MessageExchangeProto.internal_static_messageexchange_MessageRequest_descriptor;
-    }
-    private static final com.google.protobuf.Parser<MessageRequest>
-            PARSER = new com.google.protobuf.AbstractParser<MessageRequest>() {
-        @java.lang.Override
-        public MessageRequest parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return new MessageRequest(input, extensionRegistry);
-        }
-    };
-
-    static {
-        DEFAULT_INSTANCE = new com.shiroha.grpc.MessageRequest();
-    }
-
-    private com.google.protobuf.ByteString binaryImage_;
-    private int width_;
-    private int height_;
-    private byte memoizedIsInitialized = -1;
-
     private MessageRequest() {
         binaryImage_ = com.google.protobuf.ByteString.EMPTY;
     }
+
+    public static final int BINARY_IMAGE_FIELD_NUMBER = 1;
+    public static final int WIDTH_FIELD_NUMBER = 2;
 
     private MessageRequest(
             com.google.protobuf.CodedInputStream input,
@@ -103,6 +76,69 @@ public final class MessageRequest extends
             makeExtensionsImmutable();
         }
     }
+    public static final int HEIGHT_FIELD_NUMBER = 3;
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return com.shiroha.grpc.MessageExchangeProto.internal_static_messageexchange_MessageRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.shiroha.grpc.MessageRequest.class, com.shiroha.grpc.MessageRequest.Builder.class);
+    }
+    // @@protoc_insertion_point(class_scope:messageexchange.MessageRequest)
+    private static final com.shiroha.grpc.MessageRequest DEFAULT_INSTANCE;
+    private static final com.google.protobuf.Parser<MessageRequest>
+            PARSER = new com.google.protobuf.AbstractParser<MessageRequest>() {
+        @java.lang.Override
+        public MessageRequest parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return new MessageRequest(input, extensionRegistry);
+        }
+    };
+
+    /**
+     * <code>bytes binary_image = 1;</code>
+     *
+     * @return The binaryImage.
+     */
+    public com.google.protobuf.ByteString getBinaryImage() {
+        return binaryImage_;
+    }
+
+    static {
+        DEFAULT_INSTANCE = new com.shiroha.grpc.MessageRequest();
+    }
+
+    private com.google.protobuf.ByteString binaryImage_;
+
+    /**
+     * <code>int32 width = 2;</code>
+     *
+     * @return The width.
+     */
+    public int getWidth() {
+        return width_;
+    }
+    private int width_;
+    private int height_;
+
+    /**
+     * <code>int32 height = 3;</code>
+     *
+     * @return The height.
+     */
+    public int getHeight() {
+        return height_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return com.shiroha.grpc.MessageExchangeProto.internal_static_messageexchange_MessageRequest_descriptor;
+    }
 
     public static com.shiroha.grpc.MessageRequest getDefaultInstance() {
         return DEFAULT_INSTANCE;
@@ -110,7 +146,7 @@ public final class MessageRequest extends
 
     public static com.google.protobuf.Parser<MessageRequest> parser() {
         return PARSER;
-  }
+    }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
@@ -123,41 +159,6 @@ public final class MessageRequest extends
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
         return this.unknownFields;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-        return com.shiroha.grpc.MessageExchangeProto.internal_static_messageexchange_MessageRequest_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        com.shiroha.grpc.MessageRequest.class, com.shiroha.grpc.MessageRequest.Builder.class);
-    }
-
-    /**
-     * <code>bytes binary_image = 1;</code>
-     *
-     * @return The binaryImage.
-     */
-    public com.google.protobuf.ByteString getBinaryImage() {
-        return binaryImage_;
-    }
-
-    /**
-     * <code>int32 width = 2;</code>
-     *
-     * @return The width.
-     */
-    public int getWidth() {
-        return width_;
-    }
-
-    /**
-     * <code>int32 height = 3;</code>
-     *
-     * @return The height.
-     */
-    public int getHeight() {
-        return height_;
     }
 
     public static com.shiroha.grpc.MessageRequest parseFrom(
@@ -353,7 +354,7 @@ public final class MessageRequest extends
         return newBuilder();
     }
 
-  @java.lang.Override
+    @java.lang.Override
   public com.google.protobuf.Parser<MessageRequest> getParserForType() {
     return PARSER;
   }
@@ -508,32 +509,6 @@ public final class MessageRequest extends
             return this;
         }
 
-        @java.lang.Override
-        public com.shiroha.grpc.MessageRequest buildPartial() {
-            com.shiroha.grpc.MessageRequest result = new com.shiroha.grpc.MessageRequest(this);
-            result.binaryImage_ = binaryImage_;
-            result.width_ = width_;
-            result.height_ = height_;
-            onBuilt();
-            return result;
-        }
-
-        public Builder mergeFrom(com.shiroha.grpc.MessageRequest other) {
-            if (other == com.shiroha.grpc.MessageRequest.getDefaultInstance()) return this;
-            if (other.getBinaryImage() != com.google.protobuf.ByteString.EMPTY) {
-                setBinaryImage(other.getBinaryImage());
-            }
-            if (other.getWidth() != 0) {
-                setWidth(other.getWidth());
-            }
-            if (other.getHeight() != 0) {
-                setHeight(other.getHeight());
-            }
-            this.mergeUnknownFields(other.unknownFields);
-            onChanged();
-            return this;
-        }
-
         /**
          * <code>bytes binary_image = 1;</code>
          *
@@ -571,6 +546,16 @@ public final class MessageRequest extends
             return this;
         }
 
+        @java.lang.Override
+        public com.shiroha.grpc.MessageRequest buildPartial() {
+            com.shiroha.grpc.MessageRequest result = new com.shiroha.grpc.MessageRequest(this);
+            result.binaryImage_ = binaryImage_;
+            result.width_ = width_;
+            result.height_ = height_;
+            onBuilt();
+            return result;
+        }
+
         /**
          * <code>int32 width = 2;</code>
          *
@@ -595,12 +580,27 @@ public final class MessageRequest extends
 
         /**
          * <code>int32 width = 2;</code>
-         *
          * @return This builder for chaining.
          */
         public Builder clearWidth() {
 
             width_ = 0;
+            onChanged();
+            return this;
+        }
+
+        public Builder mergeFrom(com.shiroha.grpc.MessageRequest other) {
+            if (other == com.shiroha.grpc.MessageRequest.getDefaultInstance()) return this;
+            if (other.getBinaryImage() != com.google.protobuf.ByteString.EMPTY) {
+                setBinaryImage(other.getBinaryImage());
+            }
+            if (other.getWidth() != 0) {
+                setWidth(other.getWidth());
+            }
+            if (other.getHeight() != 0) {
+                setHeight(other.getHeight());
+            }
+            this.mergeUnknownFields(other.unknownFields);
             onChanged();
             return this;
         }

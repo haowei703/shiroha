@@ -291,7 +291,7 @@ public final class MessageExchangeGrpc {
                 if (result == null) {
                     serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
                             .setSchemaDescriptor(new MessageExchangeFileDescriptorSupplier())
-                            .addMethod(getSendMessageMethod())
+              .addMethod(getSendMessageMethod())
               .build();
         }
       }

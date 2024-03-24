@@ -17,37 +17,12 @@ public final class MessageResponse extends
         super(builder);
     }
 
-    public static final int RESULT_FIELD_NUMBER = 1;
-    public static final int ISEMPTY_FIELD_NUMBER = 2;
-    // @@protoc_insertion_point(class_scope:messageexchange.MessageResponse)
-    private static final com.shiroha.grpc.MessageResponse DEFAULT_INSTANCE;
-    private static final com.google.protobuf.Parser<MessageResponse>
-            PARSER = new com.google.protobuf.AbstractParser<MessageResponse>() {
-        @java.lang.Override
-        public MessageResponse parsePartialFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return new MessageResponse(input, extensionRegistry);
-        }
-    };
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-        return com.shiroha.grpc.MessageExchangeProto.internal_static_messageexchange_MessageResponse_descriptor;
-    }
-
-    static {
-        DEFAULT_INSTANCE = new com.shiroha.grpc.MessageResponse();
-    }
-
-    private volatile java.lang.Object result_;
-    private boolean isEmpty_;
-    private byte memoizedIsInitialized = -1;
-
     private MessageResponse() {
         result_ = "";
     }
+
+    public static final int RESULT_FIELD_NUMBER = 1;
+    public static final int ISEMPTY_FIELD_NUMBER = 2;
 
     private MessageResponse(
             com.google.protobuf.CodedInputStream input,
@@ -97,27 +72,8 @@ public final class MessageResponse extends
             makeExtensionsImmutable();
         }
     }
-
-    public static com.shiroha.grpc.MessageResponse getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-    }
-
-    public static com.google.protobuf.Parser<MessageResponse> parser() {
-        return PARSER;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-            UnusedPrivateParameter unused) {
-        return new MessageResponse();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-        return this.unknownFields;
-    }
+    // @@protoc_insertion_point(class_scope:messageexchange.MessageResponse)
+    private static final com.shiroha.grpc.MessageResponse DEFAULT_INSTANCE;
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -125,6 +81,20 @@ public final class MessageResponse extends
         return com.shiroha.grpc.MessageExchangeProto.internal_static_messageexchange_MessageResponse_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
                         com.shiroha.grpc.MessageResponse.class, com.shiroha.grpc.MessageResponse.Builder.class);
+    }
+    private static final com.google.protobuf.Parser<MessageResponse>
+            PARSER = new com.google.protobuf.AbstractParser<MessageResponse>() {
+        @java.lang.Override
+        public MessageResponse parsePartialFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return new MessageResponse(input, extensionRegistry);
+        }
+    };
+
+    static {
+        DEFAULT_INSTANCE = new com.shiroha.grpc.MessageResponse();
     }
 
     /**
@@ -164,6 +134,9 @@ public final class MessageResponse extends
         }
     }
 
+    private volatile java.lang.Object result_;
+    private boolean isEmpty_;
+
     /**
      * <code>bool isEmpty = 2;</code>
      *
@@ -171,6 +144,34 @@ public final class MessageResponse extends
      */
     public boolean getIsEmpty() {
         return isEmpty_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+        return com.shiroha.grpc.MessageExchangeProto.internal_static_messageexchange_MessageResponse_descriptor;
+    }
+
+    public static com.shiroha.grpc.MessageResponse getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
+
+    public static com.google.protobuf.Parser<MessageResponse> parser() {
+        return PARSER;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+        return new MessageResponse();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+        return this.unknownFields;
     }
 
     public static com.shiroha.grpc.MessageResponse parseFrom(
@@ -356,7 +357,7 @@ public final class MessageResponse extends
     }
 
     @java.lang.Override
-  public com.google.protobuf.Parser<MessageResponse> getParserForType() {
+    public com.google.protobuf.Parser<MessageResponse> getParserForType() {
     return PARSER;
   }
 
@@ -516,6 +517,42 @@ public final class MessageResponse extends
             return result;
         }
 
+        /**
+         * <code>string result = 1;</code>
+         *
+         * @return The result.
+         */
+        public java.lang.String getResult() {
+            java.lang.Object ref = result_;
+            if (!(ref instanceof java.lang.String)) {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                result_ = s;
+                return s;
+            } else {
+                return (java.lang.String) ref;
+            }
+        }
+
+        /**
+         * <code>string result = 1;</code>
+         * @return The bytes for result.
+         */
+        public com.google.protobuf.ByteString
+        getResultBytes() {
+            java.lang.Object ref = result_;
+            if (ref instanceof String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                result_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
         public Builder mergeFrom(com.shiroha.grpc.MessageResponse other) {
             if (other == com.shiroha.grpc.MessageResponse.getDefaultInstance()) return this;
             if (!other.getResult().isEmpty()) {
@@ -533,19 +570,13 @@ public final class MessageResponse extends
         /**
          * <code>string result = 1;</code>
          *
-         * @return The result.
+         * @return This builder for chaining.
          */
-        public java.lang.String getResult() {
-            java.lang.Object ref = result_;
-            if (!(ref instanceof java.lang.String)) {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                result_ = s;
-                return s;
-            } else {
-                return (java.lang.String) ref;
-            }
+        public Builder clearResult() {
+
+            result_ = getDefaultInstance().getResult();
+            onChanged();
+            return this;
         }
 
         /**
@@ -568,25 +599,6 @@ public final class MessageResponse extends
         /**
          * <code>string result = 1;</code>
          *
-         * @return The bytes for result.
-         */
-        public com.google.protobuf.ByteString
-        getResultBytes() {
-            java.lang.Object ref = result_;
-            if (ref instanceof String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                result_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        /**
-         * <code>string result = 1;</code>
-         *
          * @param value The bytes for result to set.
          * @return This builder for chaining.
          */
@@ -598,18 +610,6 @@ public final class MessageResponse extends
             checkByteStringIsUtf8(value);
 
             result_ = value;
-            onChanged();
-            return this;
-        }
-
-        /**
-         * <code>string result = 1;</code>
-         *
-         * @return This builder for chaining.
-         */
-        public Builder clearResult() {
-
-            result_ = getDefaultInstance().getResult();
             onChanged();
             return this;
         }

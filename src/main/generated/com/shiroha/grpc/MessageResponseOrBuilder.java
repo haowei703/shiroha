@@ -24,8 +24,7 @@ public interface MessageResponseOrBuilder extends
 
     /**
      * <code>bool isEmpty = 2;</code>
-     *
      * @return The isEmpty.
      */
-    boolean getIsEmpty();
+  boolean getIsEmpty();
 }
