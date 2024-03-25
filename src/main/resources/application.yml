@@ -53,7 +53,7 @@ grpc:
 python:
   service:
     host: localhost
-    port: 10415
+    port: 10123
 
 
 
